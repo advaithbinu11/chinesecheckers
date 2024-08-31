@@ -1,0 +1,19 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #fae;
+}
+canvas {
+  display: block;
+}
+head {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1vh;
+  margin: 0;
+}
+p {
+  text-align: center; /* Center text alignment */
+  font-size: 24px; /* Example styling */
+}
