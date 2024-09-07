@@ -13,17 +13,17 @@ class Plinko{
         this.color = "Black";
         World.add(world,this.body);
     }
-    setColor(){
+    setWhite(){
         this.color = "White";
     }
-    setColorFirst(){
+    setRed(){
         this.color = "Red";
     }
-    setColorSecond(){
+    setBlack(){
         this.color = "Black";
     }
     isAvailable(){
-        return this.color=="White";
+        return this.color=="White" || this.color=="Red";
     }
     getXcord(){
         return this.x;
