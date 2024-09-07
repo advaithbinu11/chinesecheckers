@@ -4,6 +4,8 @@ var checkers=[];
 var numselected = 0;
 var lastbodyclicked = -1;
 var prevbodyclicked = -1;
+var lock = false;
+var start =0;
 function preload() {
 }
 
@@ -46,7 +48,8 @@ function setup() {
   platform3= new Particle(1050,305,10,1000)
   platform4= new Particle(720,55,1000,10)
   World.add(world, platform);
-  checkers[16].setColor();
+  checkers[16].setWhite();
+  start = Date.now();
 }
 //Width:1366,ratio: 3.415
 //Height:656,ratio: 1.64
@@ -54,6 +57,8 @@ function setup() {
 //Height:656,ratio:1.64
 
 function draw() {
+  document.getElementById("myElement").textContent = "time played = "+Math.floor((Date.now() - start) / 1000);
+  document.getElementById("myElement2").textContent = "move = "+Math.floor(numselected/2);
   Engine.update(engine)
   rectMode(CENTER);
   background('#fae');
@@ -67,7 +72,6 @@ function draw() {
   }
   Matter.Events.on(mConstraint, 'mousedown', function(event) {
     const mousePosition = mouse.position;
-    console.log('Mouse clicked at:', mousePosition);
       // Add your click handling logic here
       for(var f=0; f<checkers.length;f++){
         if(calcHypotenuse((checkers[f].getXcord()-mouseX),(checkers[f].getYcord()-mouseY))<20){
@@ -75,20 +79,38 @@ function draw() {
             prevbodyclicked = lastbodyclicked;
             lastbodyclicked=f;
             numselected+=1;
-          }
           if(numselected%2==1){
-            checkers[f].setColorFirst(f);
+            if(checkers[f].isAvailable()){
+              console.log("continued!")
+              continue;
+            }
+            else{
+              checkers[f].setRed(f);
+            }
           }
-          else{
-            checkers[f].setColorSecond(f);
-            checkers[prevbodyclicked].setColor(f);
-            findChecker(checkers[prevbodyclicked].getXcord(),checkers[lastbodyclicked].getXcord(),checkers[prevbodyclicked].getYcord(),checkers[lastbodyclicked].getYcord())
+          else if(numselected%2==0){
+            if(checkers[f].isAvailable()){
+              if(checkerAdjacent(checkers[prevbodyclicked].getXcord(),checkers[lastbodyclicked].getXcord(),checkers[prevbodyclicked].getYcord(),checkers[lastbodyclicked].getYcord())){
+                checkers[prevbodyclicked].setWhite();
+                findChecker(checkers[prevbodyclicked].getXcord(),checkers[lastbodyclicked].getXcord(),checkers[prevbodyclicked].getYcord(),checkers[lastbodyclicked].getYcord())
+                checkers[f].setBlack(f);
+                console.log("Set 1");
+              }
+            }
+            else{
+              if(checkers[f].isAvailable()){
+                numselected-=1;
+                checkers[prevbodyclicked].setBlack();
+                console.log(numselected+"   "+checkers[prevbodyclicked].isAvailable());
+              }
+            }
           }
         }
       }
+      }
     });
-    // Loop through all bodies in the world
-};
+    //            lastbodyclicked = -1;
+   // prevbodyclicked = -1;
 function calcHypotenuse(a, b) {
   return Math.sqrt(a * a + b * b);
 }
@@ -98,7 +120,7 @@ function findChecker(x1,x2,y1,y2){
     midc = (y1+y2)/2;
     for(var g = 0; g<checkers.length;g++){
       if(x1==checkers[g].getXcord()&&midc==checkers[g].getYcord()){
-        checkers[g].setColor();
+        checkers[g].setWhite();
       }
     }
   }
@@ -106,8 +128,36 @@ function findChecker(x1,x2,y1,y2){
     midc = (x1+x2)/2;
     for(var g = 0; g<checkers.length;g++){
       if(y1==checkers[g].getYcord()&&midc==checkers[g].getXcord()){
-        checkers[g].setColor();
+        checkers[g].setWhite();
       }
     }
   }
+}
+}
+function checkerAdjacent(x1,x2,y1,y2){
+  var midc = 0;
+  var filled=false;
+  if(x1==x2){
+    midc = (y1+y2)/2;
+    for(var g = 0; g<checkers.length;g++){
+      if(x1==checkers[g].getXcord()&&midc==checkers[g].getYcord()){
+        if(!checkers[g].isAvailable()){
+          filled=true;
+        }
+      }
+    }
+    return Math.abs(y1-y2)<=200&&filled;
+  }
+  else if(y1==y2){
+    midc = (x1+x2)/2;
+    for(var g = 0; g<checkers.length;g++){
+      if(y1==checkers[g].getYcord()&&midc==checkers[g].getXcord()){
+        if(!checkers[g].isAvailable()){
+          filled=true;
+        }
+      }
+    }
+    return Math.abs(x1-x2)<=200&&filled;
+  }
+  return false;
 }
