@@ -1,6 +1,7 @@
 const {Engine, World, Bodies, Mouse, MouseConstraint, Constraint} = Matter;
 let engine, world, mConstriant,mouse;
 var checkers=[];
+var checkersclicked = [];
 var numselected = 0;
 var lastbodyclicked = -1;
 var prevbodyclicked = -1;
@@ -76,12 +77,15 @@ function draw() {
       for(var f=0; f<checkers.length;f++){
         if(calcHypotenuse((checkers[f].getXcord()-mouseX),(checkers[f].getYcord()-mouseY))<20){
           if(lastbodyclicked!=f){
+            checkersclicked.push(f);
+            console.log(checkersclicked);
             prevbodyclicked = lastbodyclicked;
             lastbodyclicked=f;
             numselected+=1;
           if(numselected%2==1){
             if(checkers[f].isAvailable()){
               console.log("continued!")
+              numselected-=1;
               continue;
             }
             else{
@@ -95,14 +99,16 @@ function draw() {
                 findChecker(checkers[prevbodyclicked].getXcord(),checkers[lastbodyclicked].getXcord(),checkers[prevbodyclicked].getYcord(),checkers[lastbodyclicked].getYcord())
                 checkers[f].setBlack(f);
                 console.log("Set 1");
+                lastbodyclicked = -1;
+                prevbodyclicked = -1;
+                checkersclicked.pop();
               }
             }
             else{
-              if(checkers[f].isAvailable()){
                 numselected-=1;
                 checkers[prevbodyclicked].setBlack();
+                checkers[f].setRed();
                 console.log(numselected+"   "+checkers[prevbodyclicked].isAvailable());
-              }
             }
           }
         }
