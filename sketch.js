@@ -78,7 +78,7 @@ function draw() {
     }
     checkers[f].display();
   }
-  if(count==1){
+  if(count==0){
      win = "Congratulations, you solved the puzzle!";
   }
   Matter.Events.on(mConstraint, 'mousedown', function(event) {
