@@ -7,6 +7,8 @@ var lastbodyclicked = -1;
 var prevbodyclicked = -1;
 var lock = false;
 var start =0;
+var win = "";
+var count = 0;
 function preload() {
 }
 
@@ -58,8 +60,9 @@ function setup() {
 //Height:656,ratio:1.64
 
 function draw() {
-  document.getElementById("myElement").textContent = "time played = "+Math.floor((Date.now() - start) / 1000);
+  document.getElementById("myElement").textContent = "time played = "+Math.floor((Date.now() - start) / 1000)+"seconds";
   document.getElementById("myElement2").textContent = "move = "+Math.floor(numselected/2);
+  document.getElementById("myElement3").textContent = win;	
   Engine.update(engine)
   rectMode(CENTER);
   background('#fae');
@@ -68,8 +71,15 @@ function draw() {
   platform2.display();
   platform3.display();
   platform4.display();
+  count = 0;
   for(var f=0; f<checkers.length;f++){
+    if(!checkers[f].isAvailable()){
+	count+=1;
+    }
     checkers[f].display();
+  }
+  if(count==1){
+     win = "Congratulations, you solved the puzzle!";
   }
   Matter.Events.on(mConstraint, 'mousedown', function(event) {
     const mousePosition = mouse.position;
