@@ -16,6 +16,7 @@ head {
 p {
   text-align: center; 
   font-size: 24px; 
+  white-space: normal;
 }
 a {
   marginLeft:770px;
