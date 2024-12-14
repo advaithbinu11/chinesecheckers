@@ -60,7 +60,7 @@ function setup() {
 //Height:656,ratio:1.64
 
 function draw() {
-  document.getElementById("myElement").textContent = "time played = "+Math.floor((Date.now() - start) / 1000)+" seconds";
+  document.getElementById("myElement").textContent = "time played = "+Math.floor((Date.now() - start) / 1000)+"  seconds";
   document.getElementById("myElement2").textContent = "move = "+Math.floor(numselected/2);
   document.getElementById("myElement3").textContent = win;	
   Engine.update(engine)
